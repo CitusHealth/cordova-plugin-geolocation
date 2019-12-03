@@ -205,6 +205,30 @@ var geolocation = {
             timers[id].timer = false;
             exec(null, null, 'Geolocation', 'clearWatch', [id]);
         }
+    },
+    /**
+     * Provide alert function that location is enabled or not 
+     * 
+     * @param {*} successCallback The callback return success response
+     * @param {*} errorCallback The callback return error response
+     * @param {*} options 
+     */
+    checkForAlert: function (successCallback, errorCallback, options) {
+        argscheck.checkArgs('fFO', 'geolocation.getCurrentPosition', arguments);
+        options = parseParameters(options);
+
+        // Timer var that will fire an error callback if no position is retrieved from native
+        // before the "timeout" param provided expires
+        var timeoutTimer = { timer: null };
+
+        function success() {
+            console.log("success checking location is enabled");
+        }
+        function fail() {
+            console.log("failed checking location is enabled");
+        }
+        exec(success, fail, "Geolocation", "askEnableLocationService", [options.enableHighAccuracy, options.maximumAge]);
+        return timeoutTimer;
     }
 };
 
